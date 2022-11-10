@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, ScrollView, Image, ImageBackground, } from "react-native";
+import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, } from "react-native";
 export const UserApi = () => {
-    const [userId, setUserId] = useState(1)
+    const [userId, setUserId] = useState(2)
     const [user, setUser] = useState([]);
     const userUrl = 'http://10.0.2.2:3000/api/user/' + userId;
     const fetchData = () => {
@@ -15,7 +15,7 @@ export const UserApi = () => {
     }
 
     const [userPost, setUserPost] = useState([])
-    const postFromUserUrl = 'http://10.0.2.2:3000/api/postFromUserId/'+ userId;
+    const postFromUserUrl = 'http://10.0.2.2:3000/api/post/perfil/' + userId;
     const postFromUser = () => {
         fetch(postFromUserUrl)
             .then(response => response.json())
@@ -32,46 +32,98 @@ export const UserApi = () => {
         postFromUser()
     }, [])
 
+    const countLikes = () => {
+        /*   count = post.likes + 1;
+          post.likes = count; */
+    }
+
     return (
 
+        <View>
+            <FlatList
+                data={user}
+                renderItem={
+                    ({ item }) =>
+                        <View>
+                            <View style={styles.containerUser} >
+                                <ImageBackground style={styles.coverPhoto}
+                                    source={{ uri: item.foto_de_portada }}
+                                ><Image
+                                        style={styles.imagePerfil}
+                                        source={{ uri: item.foto_de_perfil }}
+                                    />
+                                </ImageBackground>
+                                <Text style={styles.namePerfil}  >{item.nombre}</Text>
+                                <View style={styles.info}>
+                                    <Text style={styles.namePerfil}>INFO</Text>
+                                    <Text style={styles.contentInfo}  >{item.nombre}</Text>
+                                    <Text style={styles.contentInfo}>{item.apellido}</Text>
+                                    <Text style={styles.contentInfo}>{item.edad}</Text>
+                                    <Text style={styles.contentInfo}>{item.titulo}</Text>
+                                </View>
+                            </View>
+                        </View>
+                }
+            />
+            <View>
+                <Text>erere</Text>
+            </View>
+            <FlatList
+                data={userPost}
+                renderItem={
+                    ({ item }) =>
+                        <View style={styles.container}>
 
-        <ScrollView>
-            {user.map((element) => (
-                <View style={styles.containerUser} >
-                    <ImageBackground style={styles.coverPhoto}
-                        source={{ uri: 'https://media.istockphoto.com/id/1428484776/es/foto/toque-final-de-chefs.jpg?s=1024x1024&w=is&k=20&c=gudAefJnwga3_YBUWfmK4yj9TCLrK-JfFTQuJZKK6h8=' }}
-                    ><Image
-                            style={styles.imagePerfil}
-                            source={{ uri: 'https://media.istockphoto.com/id/1089109548/es/foto/las-mujeres-que-disfrutan-en-caf%C3%A9.jpg?s=1024x1024&w=is&k=20&c=Niyqg9E4hce2NXym7N796n-BVWtpusAlyYe7khLcemQ=' }}
-                        />
+                            <View style={styles.userInfo}>
+                                <Image
+                                    style={styles.imagePerfilPost}
+                                    source={{ uri: item.foto_de_perfil }}
+                                /><Text style={styles.userName}> {item.nombre}</Text>
+                            </View>
+                            <Image
+                                style={styles.imagePost}
+                                source={{ uri: item.imagen }}
+                            />
 
-                    </ImageBackground>
+                            <Text style={styles.title}> {item.titulo}</Text>
+                            <Text style={styles.content}>{item.contenido}</Text>
+                            <View style={styles.actions}>
+                                <Text>👍 {item.likes} </Text>
+                                <Text>4 Comentarios</Text>
+                            </View>
+                            <View style={styles.actions}>
+                                <Button
+                                    color='white'
+                                    title="👍 Likes"
+                                    onPress={countLikes()}
+                                />
+                                <Text>💬 Comentar</Text>
+                                <Text> ✈️ Compartir</Text>
+                            </View>
+                        </View>} />
+        </View>
 
-                    <Text style={styles.namePerfil} key={element.id}  >{element.nombre}</Text>
-                    <View style={styles.info}>
-                        <Text style={styles.namePerfil}>INFO</Text>
-                        <Text style={styles.contentInfo} key={element.id}  >{element.nombre}</Text>
-                        <Text style={styles.contentInfo}>{element.apellido}</Text>
-                        <Text style={styles.contentInfo}>{element.edad}</Text>
-                    </View>
-                </View>
 
-            ))}
-            
-            {userPost.map((element) => (
-                <View style={styles.container} >
-                    <Text style={styles.title} key={element.id}  >{element.titulo}</Text>
-                    <Text style={styles.content}>{element.contenido}</Text>
-                    <View style={styles.actions}>
-                        <Text>👍 Likes</Text>
-                        <Text>💬 Comentar</Text>
-                        <Text> ✈️ Compartir</Text>
-                    </View>
-                </View>
-            ))}
-       
-        </ScrollView>
-
+        /*  <ScrollView>
+             {user.map((element) => (
+                 
+ 
+             ))}
+             
+             {userPost.map((element) => (
+                 <View style={styles.container} >
+                     <Text style={styles.title} key={element.id}  >{element.titulo}</Text>
+                     <Text style={styles.content}>{element.contenido}</Text>
+                     <View style={styles.actions}>
+                         <Text>👍 Likes</Text>
+                         <Text>💬 Comentar</Text>
+                         <Text> ✈️ Compartir</Text>
+                     </View>
+                 </View>
+             ))}
+        
+         </ScrollView>
+  */
 
     );
 
@@ -112,7 +164,8 @@ const styles = StyleSheet.create(
 
         },
         info: {
-            borderTopWidth: 1,
+            borderTopWidth: 0.5,
+            borderColor: 'gray'
 
         },
         imagePerfil: {
@@ -128,7 +181,7 @@ const styles = StyleSheet.create(
         , coverPhoto: {
             width: '100%',
             height: 168,
-            backgroundColor: 'red'
+            backgroundColor: '#E4E5E6'
         },
         container: {
             flex: 1,
@@ -137,12 +190,13 @@ const styles = StyleSheet.create(
             height: '50%',
             marginBottom: '1%',
             marginTop: '1%',
+            paddingTop: 20,
             elevation: 3,
             borderRadius: 5,
             shadowColor: '#333',
             shadowOpacity: 0.3,
             shadowOffset: { width: 1, height: 1 },
-           
+
 
         },
         title: {
@@ -164,6 +218,29 @@ const styles = StyleSheet.create(
 
             justifyContent: 'space-evenly',
             borderTopWidth: 1,
+
+        },
+        userInfo: {
+            flexDirection: 'row'
+        },
+        userName: {
+            fontSize: 18,
+            color: 'black',
+            marginTop: 14,
+        },
+        imagePerfilPost: {
+            width: 50,
+            height: 50,
+            borderWidth: 3,
+            borderColor: 'white',
+            borderRadius: 65,
+            padding: 5,
+            marginLeft: 20,
+            marginTop: 7,
+        },
+        imagePost: {
+            width: '100%',
+            height: 300
 
         }
     })

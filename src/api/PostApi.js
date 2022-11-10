@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, ScrollView, Card, } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, Button, FlatList } from "react-native";
 
 
 export const PostApi = () => {
     const [post, setPost] = useState([]);
-    /* const [loauding, setLoauding] = useState(false); */
+    const [likes, setLikes] = useState(0)
+    const [id, setId] = useState(0)
     const postUrl = 'http://10.0.2.2:3000/api/post';
-    /* const fetchData = async ()=>{
-       const response = await fetch(postUrl)
-       const data = await response.json();
-       setPost(data);
-       alert(post);
-   }  */
-
+    const [comentarios, setComentarios] = useState([]);
+    const [fotoDePerfil, setFotoDePerfil] = useState([]);
     const fetchData = () => {
         fetch(postUrl)
             .then(response => response.json())
@@ -22,12 +18,40 @@ export const PostApi = () => {
             .catch(error => console.log(error))
     }
 
+    const [comentarioId, setComentarioId] = useState(1);
+    const comentariosUrl = 'http://10.0.2.2:3000/api/comentariosFromPostId/' + id;
+    const fetchDataComentarios = () => {
+        fetch(comentariosUrl)
+            .then(response => response.json())
+            .then((dataComentario) => {
+                setComentarios(dataComentario);
+            })/* .then(console.log(comentarios)) */
+            .catch(error => console.log(error))
+    }
 
+    const fotoDePerfilUrl = 'http://10.0.2.2:3000/api/userPerfil/' + id;
+
+    const fetchFotoDeUsuario = () => {
+        fetch(fotoDePerfilUrl)
+            .then(response => response.json())
+            .then((datafotoDePerfil) => {
+                setFotoDePerfil(datafotoDePerfil);
+                console.log(fotoDePerfil.foto_de_perfil)
+            })
+    }
 
     useEffect(() => {
         fetchData()
-    }, [])
+        fetchDataComentarios()
+    }, [
 
+    ])
+
+    const comentario = (dato) => {
+        if (result.post_id) {
+
+        }
+    }
 
     const renderPost = ({ item }) => {
         <View style={styles.container}>
@@ -36,27 +60,84 @@ export const PostApi = () => {
             <Text>{item.contenido}</Text>
         </View>
     }
-    /* console.log(renderPost) */
+    const countLikes = () => {
+        count = post.likes + 1;
+        post.likes = count;
+    }
+    /*  setLikes(post.likes) */
     return (
-        /*   <FlatList
-          data={post}
-          renderItem={renderPost} keyExtractor={item=> item.id}/>  */
+        <FlatList
 
-        <ScrollView>
-            {post.map((element) => (
-                <View style={styles.container} >
+            data={post}
 
-                    <Text style={styles.title} key={element.id}  >{element.titulo}</Text>
-                    <Text style={styles.content}>{element.contenido}</Text>
-                    <View style={styles.actions}>
-                        <Text>👍 Likes</Text>
-                        <Text>💬 Comentar</Text>
-                        <Text> ✈️ Compartir</Text>
-                    </View>
-                </View>
-            ))}
-        </ScrollView>
+            renderItem={
+                ({ item }) =>
+                    <View style={styles.container}>
+                        
+                        <View style={styles.userInfo}>
+                        <Image
+                            style={styles.imagePerfil}
+                            source={{ uri: item.foto_de_perfil }}
+                        /><Text style={styles.userName}> {item.nombre}</Text>
+                        </View>
+                        <Image
+                            style={styles.imagePost}
+                            source={{ uri: item.imagen }}
+                        />
+                        <Text style={styles.title}> {item.titulo}</Text>
+                        <Text style={styles.content}>{item.contenido}</Text>
+                        <View style={styles.actions}>
+                            <Text>👍 {item.likes} </Text>
+                            <Text>4 Comentarios</Text>
+                        </View>
+                        <View style={styles.actions}>
+                            <Button
+                                color='white'
+                                title="👍 Likes"
+                                onPress={countLikes()}
+                            />
+                            <Text>💬 Comentar</Text>
+                            <Text> ✈️ Compartir</Text>
+                        </View>
+                    </View>} />
 
+        /*  <ScrollView>
+             {post.map((element) => (
+                 <View style={styles.container} >
+                     {fotoDePerfil.map((perfil) => (
+                         <Image
+                             style={styles.imagePerfil}
+                             source={{ uri: perfil.foto_de_perfil + element.id }}
+                         />
+                     ))}
+ 
+                     <Text style={styles.title} key={element.id}  >{element.titulo}</Text>
+                     <Text style={styles.content}>{element.contenido}</Text>
+                     {comentarios.map((result) => (
+ 
+                         <View  >
+                             <Text key={result.id}  >{result.comentario}</Text>
+                             <Text style={styles.title} key={result.id}  >{result.post_id}</Text>
+                         </View>
+                     ))}
+                     <View style={styles.actions}>
+                         <Text>👍{element.likes} </Text>
+                         <Text>4 Comentarios</Text>
+ 
+                     </View>
+                     <View style={styles.actions}>
+                         <Button
+                             title="👍 Likes"
+                             onPress={countLikes()}
+                         />
+                         <Text>💬 Comentar</Text>
+                         <Text> ✈️ Compartir</Text>
+                     </View>
+                 </View>
+             ))}
+ 
+         </ScrollView>
+  */
     );
 
 
@@ -66,10 +147,6 @@ const styles = StyleSheet.create(
     {
         container: {
             flex: 1,
-            /* alignContent: 'center',
-            justifyContent: 'center',
-            alignItems: 'center', */
-
             backgroundColor: '#ffffff',
             width: '90%',
             height: '50%',
@@ -81,7 +158,6 @@ const styles = StyleSheet.create(
             shadowOpacity: 0.3,
             shadowOffset: { width: 1, height: 1 },
             marginHorizontal: 18,
-
         },
         title: {
             fontSize: 24,
@@ -99,15 +175,38 @@ const styles = StyleSheet.create(
         },
         actions: {
             flexDirection: 'row',
-
             justifyContent: 'space-evenly',
-            borderTopWidth: 1,
+            paddingTop: 10,
+            paddingBottom: 10,
+            borderTopWidth: 0.5,
+            borderColor: 'gray'
+        },
+        imagePerfil: {
+            width: 50,
+            height: 50,
+            borderWidth: 3,
+            borderColor: 'white',
+            borderRadius: 65,
+            padding: 5,
+            marginLeft: 20,
+            marginTop: 7,
+        },
+        boton: {
+            backgroundColor: 'white',
+        },
+        userInfo:{
+            flexDirection: 'row'
+        },
+        userName:{
+            fontSize:18,
+            color: 'black',
+            marginTop:14,
+        },
+        imagePost:{
+            width : '100%',
+            height : 250
 
         }
     })
 
-{/* <View style ={styles.container} >
-        <Text>titulo</Text>
-             <Text>{titulo}</Text>
-            <Text>{contenido}</Text>
-        </View> */}
+
