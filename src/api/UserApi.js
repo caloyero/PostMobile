@@ -1,15 +1,17 @@
 
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, } from "react-native";
+import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, ScrollView, } from "react-native";
 export const UserApi = () => {
-    const [userId, setUserId] = useState(2)
+    const [userId, setUserId] = useState(6)
     const [user, setUser] = useState([]);
     const userUrl = 'http://10.0.2.2:3000/api/user/' + userId;
+
     const fetchData = () => {
         fetch(userUrl)
             .then(response => response.json())
             .then((data) => {
                 setUser(data);
+                console.log(user.this.nombre)
             })
             .catch(error => console.log(error))
     }
@@ -30,6 +32,7 @@ export const UserApi = () => {
     useEffect(() => {
         fetchData()
         postFromUser()
+
     }, [])
 
     const countLikes = () => {
@@ -37,36 +40,31 @@ export const UserApi = () => {
           post.likes = count; */
     }
 
+    const userInfo = user.map((info =>
+        <View key={info.toString()} style={styles.containerUser}>
+            <ImageBackground style={styles.coverPhoto}
+                source={{ uri: info.foto_de_portada }}
+            ><Image
+                    style={styles.imagePerfil}
+                    source={{ uri: info.foto_de_perfil }}
+                />
+            </ImageBackground>
+            <Text style={styles.namePerfil}  >{info.nombre}</Text>
+            <View style={styles.info}>
+                <Text style={styles.namePerfil}>INFO</Text>
+                <Text style={styles.contentInfo}  >{info.nombre}</Text>
+                <Text style={styles.contentInfo}>{info.apellido}</Text>
+                <Text style={styles.contentInfo}>{info.edad}</Text>
+                <Text style={styles.contentInfo}>{info.titulo}</Text>
+            </View>
+        </View>))
+        
+
     return (
 
-        <View>
-            <FlatList
-                data={user}
-                renderItem={
-                    ({ item }) =>
-                        <View>
-                            <View style={styles.containerUser} >
-                                <ImageBackground style={styles.coverPhoto}
-                                    source={{ uri: item.foto_de_portada }}
-                                ><Image
-                                        style={styles.imagePerfil}
-                                        source={{ uri: item.foto_de_perfil }}
-                                    />
-                                </ImageBackground>
-                                <Text style={styles.namePerfil}  >{item.nombre}</Text>
-                                <View style={styles.info}>
-                                    <Text style={styles.namePerfil}>INFO</Text>
-                                    <Text style={styles.contentInfo}  >{item.nombre}</Text>
-                                    <Text style={styles.contentInfo}>{item.apellido}</Text>
-                                    <Text style={styles.contentInfo}>{item.edad}</Text>
-                                    <Text style={styles.contentInfo}>{item.titulo}</Text>
-                                </View>
-                            </View>
-                        </View>
-                }
-            />
+        <ScrollView>
             <View>
-                <Text>erere</Text>
+               {userInfo}
             </View>
             <FlatList
                 data={userPost}
@@ -101,7 +99,7 @@ export const UserApi = () => {
                                 <Text> ✈️ Compartir</Text>
                             </View>
                         </View>} />
-        </View>
+        </ScrollView>
 
 
         /*  <ScrollView>

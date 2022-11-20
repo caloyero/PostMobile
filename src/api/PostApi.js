@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image, ScrollView, Button, FlatList } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, Button, FlatList, TouchableHighlight, Pressable, Modal, TouchableWithoutFeedback, Keyboard, TouchableOpacity, } from "react-native";
+import 'react-native-gesture-handler';
+import RBSheet from "react-native-raw-bottom-sheet";
+//import { Comentarios } from "../components/Comentarios";
+import { createStackNavigator } from '@react-navigation/stack';
+import { StackNavigation } from "../components/comentarios/ComentarioStack";
+import { PruebaScreen } from "../components/comentarios/ComentarioStack";
+import { ComentariosStack } from "../components/comentarios/ComentarioStack";
+import { Navigation } from "../components/Navigation";
+import { useLinkProps } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
-export const PostApi = () => {
+export const PostApi = ({ navigation }) => {
     const [post, setPost] = useState([]);
     const [likes, setLikes] = useState(0)
     const [id, setId] = useState(0)
@@ -64,42 +74,125 @@ export const PostApi = () => {
         count = post.likes + 1;
         post.likes = count;
     }
+
+    const Login = () => {
+        navigation.push("Login")
+    }
+    const [count, setCount] = useState(0);
+    const onPress = () => setCount(count + 1);
+    const [modalVisible, setModalVisible] = useState(false);
+    const Stack = createStackNavigator();
+
     /*  setLikes(post.likes) */
     return (
-        <FlatList
+        <SafeAreaView>
+            <View>
+                <TouchableOpacity style = {styles.loginScreen}
+                    onPress={() => navigation.navigate('Aunt')}
+                >
+                    <Text  style = {styles.loginScreen}>😁</Text>
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                data={post}
+                renderItem={
+                    ({ item }) =>
+                        <View style={styles.container}>
 
-            data={post}
-
-            renderItem={
-                ({ item }) =>
-                    <View style={styles.container}>
-                        
-                        <View style={styles.userInfo}>
-                        <Image
-                            style={styles.imagePerfil}
-                            source={{ uri: item.foto_de_perfil }}
-                        /><Text style={styles.userName}> {item.nombre}</Text>
-                        </View>
-                        <Image
-                            style={styles.imagePost}
-                            source={{ uri: item.imagen }}
-                        />
-                        <Text style={styles.title}> {item.titulo}</Text>
-                        <Text style={styles.content}>{item.contenido}</Text>
-                        <View style={styles.actions}>
-                            <Text>👍 {item.likes} </Text>
-                            <Text>4 Comentarios</Text>
-                        </View>
-                        <View style={styles.actions}>
-                            <Button
-                                color='white'
-                                title="👍 Likes"
-                                onPress={countLikes()}
+                            <View style={styles.userInfo}>
+                                <Image
+                                    style={styles.imagePerfil}
+                                    source={{ uri: item.foto_de_perfil }}
+                                /><Text style={styles.userName}> {item.nombre}</Text>
+                            </View>
+                            <Image
+                                style={styles.imagePost}
+                                source={{ uri: item.imagen }}
                             />
-                            <Text>💬 Comentar</Text>
-                            <Text> ✈️ Compartir</Text>
-                        </View>
-                    </View>} />
+                            <Text style={styles.title}> {item.titulo}</Text>
+                            <Text style={styles.content}>{item.contenido}</Text>
+                            <View style={styles.actions}>
+                                <Text>👍 {(item.likes + count)} </Text>
+                                <Text>4 Comentarios</Text>
+                            </View>
+                            <View style={styles.actions}>
+                                <TouchableOpacity
+                                    onPress={onPress}
+                                >
+                                    <Text>👍</Text>
+                                </TouchableOpacity>
+
+                                {/*  <TouchableHighlight onPress={onPress}>
+                                <View >
+                                    <Text>👍</Text>
+                                </View>
+                            </TouchableHighlight> */}
+
+                                {/*  <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={modalVisible}
+                                onRequestClose={() => {
+                                    Alert.alert("Modal has been closed.");
+                                    setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <TouchableWithoutFeedback onPress={Keyboard.dismiss()}>
+                                    <View style={styles.centeredView}>
+                                        <View style={styles.modalView}>
+                                            <Pressable
+                                                style={[styles.button, styles.buttonClose]}
+                                                onPress={() => setModalVisible(!modalVisible)}
+                                            >
+                                                <Text style={styles.textStyle}>x</Text>
+                                            </Pressable>
+                                            <Comentarios />
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </Modal>
+                            <Pressable
+                                style={[styles.button, styles.buttonOpen]}
+                                onPress={() => setModalVisible(true)}
+                            >
+                                <Text style={styles.textStyle}>Comentar</Text>
+                            </Pressable> */}
+
+                                {/*  <View>
+                                <Button title="💬 Comentar" onPress={() => this.RBSheet.open()} />
+                                <RBSheet
+                                    ref={ref => {
+                                        this.RBSheet = ref;
+                                    }}
+                                    height={500}
+                                    //openDuration={250}
+                                    customStyles={{
+                                        container: {
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }
+
+                                    }}
+                                >
+                                    <Comentarios />
+                                </RBSheet>
+                            </View> */}
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate("comentar")
+                                    }}
+                                >
+                                    <Text>💬 Comentar</Text>
+                                </TouchableOpacity>
+
+                                <Text> ✈️ Compartir</Text>
+
+                            </View>
+
+                        </View>} />
+        </SafeAreaView>
+
+
 
         /*  <ScrollView>
              {post.map((element) => (
@@ -194,18 +287,64 @@ const styles = StyleSheet.create(
         boton: {
             backgroundColor: 'white',
         },
-        userInfo:{
+        userInfo: {
             flexDirection: 'row'
         },
-        userName:{
-            fontSize:18,
+        userName: {
+            fontSize: 18,
             color: 'black',
-            marginTop:14,
+            marginTop: 14,
         },
-        imagePost:{
-            width : '100%',
-            height : 250
+        imagePost: {
+            width: '100%',
+            height: 250
 
+        }, centeredView: {
+            flex: 1,
+
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 160
+        },
+        modalView: {
+            margin: 20,
+            height: 300,
+            backgroundColor: "white",
+            borderRadius: 20,
+            padding: 35,
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5
+        },
+        button: {
+            borderRadius: 1,
+            padding: 10,
+            elevation: 2
+        },
+        buttonOpen: {
+            backgroundColor: "white",
+        },
+        buttonClose: {
+            backgroundColor: "white",
+        },
+        textStyle: {
+            color: "gray",
+            fontWeight: "bold",
+            textAlign: "center"
+        },
+        modalText: {
+            marginBottom: 15,
+            textAlign: "center"
+        },loginScreen:{
+            width: 50,
+            height:50,
+            fontSize:  30,
         }
     })
 
