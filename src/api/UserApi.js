@@ -1,21 +1,26 @@
 
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, } from "react-native";
+import React, { useEffect, useState,useContext } from "react";
+import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, ScrollView, } from "react-native";
+import { UserContext } from "../components/aunt/AuntUser";
 export const UserApi = () => {
-    const [userId, setUserId] = useState(2)
+    const { id } = useContext(UserContext)
+    console.log(id)
+    const [userId, setUserId] = useState(id)
     const [user, setUser] = useState([]);
-    const userUrl = 'http://10.0.2.2:3000/api/user/' + userId;
+    const userUrl = `http://10.0.2.2:4000/api/user/${id}`;
+
     const fetchData = () => {
         fetch(userUrl)
             .then(response => response.json())
             .then((data) => {
                 setUser(data);
+                console.log(user.this.nombre)
             })
             .catch(error => console.log(error))
     }
 
     const [userPost, setUserPost] = useState([])
-    const postFromUserUrl = 'http://10.0.2.2:3000/api/post/perfil/' + userId;
+    const postFromUserUrl = `http://10.0.2.2:4000/api/post/perfil/${id}`;
     const postFromUser = () => {
         fetch(postFromUserUrl)
             .then(response => response.json())
@@ -30,43 +35,39 @@ export const UserApi = () => {
     useEffect(() => {
         fetchData()
         postFromUser()
-    }, [])
+
+    }, [id])
 
     const countLikes = () => {
         /*   count = post.likes + 1;
           post.likes = count; */
     }
 
+    const userInfo = user.map((info =>
+        <View key={info.toString()} style={styles.containerUser}>
+            <ImageBackground style={styles.coverPhoto}
+                source={{ uri: info.foto_de_portada }}
+            ><Image
+                    style={styles.imagePerfil}
+                    source={{ uri: info.foto_de_perfil }}
+                />
+            </ImageBackground>
+            <Text style={styles.namePerfil}  >{info.nombre}</Text>
+            <View style={styles.info}>
+                <Text style={styles.namePerfil}>INFO</Text>
+                <Text style={styles.contentInfo}>{info.nombre}</Text>
+                <Text style={styles.contentInfo}>{info.apellido}</Text>
+                <Text style={styles.contentInfo}>{info.edad}</Text>
+                <Text style={styles.contentInfo}>{info.titulo}</Text>
+            </View>
+        </View>))
+        
+
     return (
 
-        <View>
-            <FlatList
-                data={user}
-                renderItem={
-                    ({ item }) =>
-                        <View>
-                            <View style={styles.containerUser} >
-                                <ImageBackground style={styles.coverPhoto}
-                                    source={{ uri: item.foto_de_portada }}
-                                ><Image
-                                        style={styles.imagePerfil}
-                                        source={{ uri: item.foto_de_perfil }}
-                                    />
-                                </ImageBackground>
-                                <Text style={styles.namePerfil}  >{item.nombre}</Text>
-                                <View style={styles.info}>
-                                    <Text style={styles.namePerfil}>INFO</Text>
-                                    <Text style={styles.contentInfo}  >{item.nombre}</Text>
-                                    <Text style={styles.contentInfo}>{item.apellido}</Text>
-                                    <Text style={styles.contentInfo}>{item.edad}</Text>
-                                    <Text style={styles.contentInfo}>{item.titulo}</Text>
-                                </View>
-                            </View>
-                        </View>
-                }
-            />
+        <ScrollView>
             <View>
-                <Text>erere</Text>
+               {userInfo}
             </View>
             <FlatList
                 data={userPost}
@@ -101,7 +102,7 @@ export const UserApi = () => {
                                 <Text> ✈️ Compartir</Text>
                             </View>
                         </View>} />
-        </View>
+        </ScrollView>
 
 
         /*  <ScrollView>
