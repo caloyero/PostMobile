@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, Image, TextInput, StyleSheet, Button, Pressable } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Formik } from 'formik';
+import { UserContext } from "../aunt/AuntUser";
 
 export const LoginScreen = ({ navigation }) => {
+    const {id, dispatch} = useContext(UserContext)
+   
+    //setMe(userAunt)
+    const [userAunt, setUserAunt] = useState({})
+
+   /*   const register= async() =>{
+        await setMe(JSON.parse( userAunt))
+    } 
+
+     useEffect(()=>{
+        register()
+    },[])  */
 
     return (
         <View style={styles.container}>
@@ -26,7 +39,7 @@ export const LoginScreen = ({ navigation }) => {
                 onSubmit={async (values, actions) => {
                     actions.resetForm();
                     console.log(values)
-                    await fetch("http://10.0.2.2:3000/api/comentarios", {
+                    await fetch("http://10.0.2.2:4000/api/user/aunt", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -34,8 +47,23 @@ export const LoginScreen = ({ navigation }) => {
                         body: JSON.stringify(values),
                     })
                         .then((response) => response.json())
+                        .then((data) => {setUserAunt(data)})
+                        //.then(setMe(JSON.parse( userAunt)))
+                        .then(console.log(userAunt))
+                        .then(console.log(userAunt.map(element => element.id)))
+                        .then(
+                            dispatch({
+                                
+                                type: 'logeado',
+                                 id: userAunt.map(element => element.id),
+                                 email:userAunt.map(element => element.email),
+                                 password:userAunt.map(element => element.password),
+                                 
+                                 })
+                        )
+                        //.then((data) =>{setMe(data)})
                         .then((values) => {
-                            console.log('Success:', values);
+                            //console.log('Success:', values);
                         })
                         .catch((error) => {
                             console.error('Error:', error);
@@ -52,7 +80,7 @@ export const LoginScreen = ({ navigation }) => {
                             placeholder="Email"
                             onChangeText={handleChange('email')}
                             //autoFocus={true}
-                            onBlur={handleBlur('email')}
+                            //onBlur={handleBlur('email')}
                             value={values.comentario}
                         />
                         <TextInput
@@ -60,7 +88,7 @@ export const LoginScreen = ({ navigation }) => {
                             placeholder="Password"
                             onChangeText={handleChange('password')}
                             //autoFocus={true}
-                            onBlur={handleBlur('password')}
+                            //onBlur={handleBlur('password')}
                             value={values.comentario}
                         />
                         {/*  <Button
@@ -78,9 +106,9 @@ export const LoginScreen = ({ navigation }) => {
                         >
                             <Text
                             style={styles.creacCuentaText}
-                            >Crear cuenta</Text>
+                            >Crear Cuenta</Text>
                         </TouchableOpacity>
-                        
+                        <Text>{ id}</Text>
                         </View>
                         
                     </View>
@@ -90,6 +118,10 @@ export const LoginScreen = ({ navigation }) => {
     )
 
 }
+
+//const [user, setUser] = useState()
+
+//console.log(user)
 
 const styles = StyleSheet.create(
     {

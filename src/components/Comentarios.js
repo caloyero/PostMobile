@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { Button, TextInput, View, StyleSheet, Text, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Formik } from 'formik';
-import Form from 'react-native-form';
+import { UserContext } from "./aunt/AuntUser";
 
 
 export const Comentarios = () => {
-
+const {id} = useContext(UserContext)
   const [usuariosId, setUsuarisId] = useState(1)
   const [postId, setPostId] = useState(1)
 
@@ -13,13 +13,13 @@ export const Comentarios = () => {
     <Formik
       initialValues={{
         comentario: '',
-        usuarios_id: usuariosId,
+        usuarios_id: id,
         post_id: postId,
       }}
       onSubmit={async (values, actions) => {
         actions.resetForm();
         console.log(values)
-        await fetch("http://10.0.2.2:3000/api/comentarios", {
+        await fetch("http://10.0.2.2:4000/api/comentarios", {
           method: 'POST', 
           headers: {
             'Content-Type': 'application/json',

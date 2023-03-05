@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Image, ScrollView, Button, FlatList, TouchableHighlight, Pressable, Modal, TouchableWithoutFeedback, Keyboard, TouchableOpacity, } from "react-native";
 import 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -10,13 +10,16 @@ import { ComentariosStack } from "../components/comentarios/ComentarioStack";
 import { Navigation } from "../components/Navigation";
 import { useLinkProps } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UserContext } from "../components/aunt/AuntUser";
 
 
 export const PostApi = ({ navigation }) => {
+    const {id} = useContext(UserContext)
+    console.log({id})
     const [post, setPost] = useState([]);
     const [likes, setLikes] = useState(0)
-    const [id, setId] = useState(0)
-    const postUrl = 'http://10.0.2.2:3000/api/post';
+    const [d, setId] = useState({id})
+    const postUrl = 'http://10.0.2.2:4000/api/post';
     const [comentarios, setComentarios] = useState([]);
     const [fotoDePerfil, setFotoDePerfil] = useState([]);
     const fetchData = () => {
@@ -29,7 +32,7 @@ export const PostApi = ({ navigation }) => {
     }
 
     const [comentarioId, setComentarioId] = useState(1);
-    const comentariosUrl = 'http://10.0.2.2:3000/api/comentariosFromPostId/' + id;
+    const comentariosUrl = 'http://10.0.2.2:3000/api/comentariosFromPostId/' + d;
     const fetchDataComentarios = () => {
         fetch(comentariosUrl)
             .then(response => response.json())
@@ -39,7 +42,7 @@ export const PostApi = ({ navigation }) => {
             .catch(error => console.log(error))
     }
 
-    const fotoDePerfilUrl = 'http://10.0.2.2:3000/api/userPerfil/' + id;
+    const fotoDePerfilUrl = 'http://10.0.2.2:3000/api/userPerfil/' + d;
 
     const fetchFotoDeUsuario = () => {
         fetch(fotoDePerfilUrl)
@@ -88,7 +91,7 @@ export const PostApi = ({ navigation }) => {
         <SafeAreaView>
             <View>
                 <TouchableOpacity style = {styles.loginScreen}
-                    onPress={() => navigation.navigate('Aunt')}
+                    onPress={() =>  navigation.navigate('Aunt') }
                 >
                     <Text  style = {styles.loginScreen}>😁</Text>
                 </TouchableOpacity>
@@ -179,7 +182,7 @@ export const PostApi = ({ navigation }) => {
                             </View> */}
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("comentar")
+                                       id ? navigation.navigate("comentar") :  navigation.navigate("Aunt")
                                     }}
                                 >
                                     <Text>💬 Comentar</Text>

@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, FlatList, ScrollView, Image, ImageBackground, }
 export const ListUserPost = () => {
     const [userId, setUserId] = useState(6)
     const [userPost, setUserPost] = useState([])
-    const postFromUserUrl = 'http://10.0.2.2:3000i/postFromUserId/' + userId;
+    const postFromUserUrl = 'http://10.0.2.2:4000/postFromUserId/' + userId;
     const postFromUser = () => {
         fetch(postFromUserUrl)
             .then(response => response.json())

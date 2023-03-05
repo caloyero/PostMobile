@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TextInput, StyleSheet, Button, Pressable } from "react-native";
+import { View, Text, Image, TextInput, StyleSheet, Button, Pressable, ImageBackground,ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Formik } from 'formik';
 
@@ -7,26 +7,42 @@ export const CreateUserScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <View
+                style={styles.containerButtonBack}
+            >
+                <TouchableOpacity
+
+                    onPress={() => navigation.navigate('Login')}
+                >
+                    <ImageBackground
+                        style={styles.ButtonBack}
+                        source={require('../utils/images/izquierda.png')}
+                    />
+                    <Text>back</Text>
+                </TouchableOpacity>
+            </View>
 
             <Image
                 style={styles.Logo}
                 source={require('../Users/logo.png')}
-                //source={{ uri: 'https://leman.ie/wp-content/uploads/2018/12/An-Post-Logo-Current.jpg' }}
+            //source={{ uri: 'https://leman.ie/wp-content/uploads/2018/12/An-Post-Logo-Current.jpg' }}
             />
-            <TouchableOpacity
-                onPress={() => navigation.navigate('Login')}
-            >
-                <Text>😁</Text>
-            </TouchableOpacity>
+
             <Formik
                 initialValues={{
+                    nombre: '',
+                    apellido:'',
+                    foto_de_perfil: '',
+                    foto_de_portada: '',
+                    edad: '',
                     email: '',
                     password: '',
+
                 }}
                 onSubmit={async (values, actions) => {
                     actions.resetForm();
                     console.log(values)
-                    await fetch("http://10.0.2.2:3000/api/comentarios", {
+                    await fetch("http://10.0.2.2:4000/api/comentarios", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -46,12 +62,53 @@ export const CreateUserScreen = ({ navigation }) => {
 
             >
                 {({ handleChange, handleBlur, handleSubmit, values }) => (
-                    <View>
+                    <ScrollView>
                         <View style={styles.creacCuenta}>
                             <Text
                                 style={styles.creacCuentaText}
                             >Crear Cuenta</Text>
                         </View>
+                        
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Nombre"
+                            onChangeText={handleChange('nombre')}
+                            //autoFocus={true}
+                            onBlur={handleBlur('nombre')}
+                            value={values.comentario}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Apellido"
+                            onChangeText={handleChange('apellido')}
+                            //autoFocus={true}
+                            onBlur={handleBlur('apellido')}
+                            value={values.comentario}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Edad"
+                            onChangeText={handleChange('edad')}
+                            //autoFocus={true}
+                            onBlur={handleBlur('edad')}
+                            value={values.comentario}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Foto de perfil"
+                            onChangeText={handleChange('Foto_de_perfil')}
+                            //autoFocus={true}
+                            onBlur={handleBlur('Foto_de_perfil')}
+                            value={values.comentario}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Foto de Portada"
+                            onChangeText={handleChange('foto_de_portada')}
+                            //autoFocus={true}
+                            onBlur={handleBlur('foto_de_portada')}
+                            value={values.comentario}
+                        />
                         <TextInput
                             style={styles.input}
                             placeholder="Email"
@@ -77,7 +134,7 @@ export const CreateUserScreen = ({ navigation }) => {
                         <Pressable style={styles.buttom} onPress={handleSubmit}>
                             <Text style={styles.textButtom}>Crear cuenta</Text>
                         </Pressable>
-                    </View>
+                    </ScrollView>
                 )}
             </Formik>
         </View>
@@ -88,7 +145,7 @@ export const CreateUserScreen = ({ navigation }) => {
 const styles = StyleSheet.create(
     {
         container: {
-            flex: 1,
+            flex: 2,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#6C4AB6',
@@ -144,12 +201,26 @@ const styles = StyleSheet.create(
             color: 'white',
         },
         creacCuenta: {
-            alignItems: 'center',
+           alignItems: 'center',
             margin: 10
         },
         creacCuentaText: {
             color: 'white',
             fontSize: 20,
+        },
+        containerButtonBack: {
+            justifyContent: 'flex-start',
+            position: 'absolute',
+            top: 5,
+            left: 50,
+            with: 50,
+            height: 70,
+            //backgroundColor: 'white',
+        },
+        ButtonBack: {
+            with: 20,
+            height: 20,
+            
         }
     })
 

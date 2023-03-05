@@ -1,10 +1,13 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { Text, View, StyleSheet, FlatList, Button, Image, ImageBackground, ScrollView, } from "react-native";
+import { UserContext } from "../components/aunt/AuntUser";
 export const UserApi = () => {
-    const [userId, setUserId] = useState(6)
+    const { id } = useContext(UserContext)
+    console.log(id)
+    const [userId, setUserId] = useState(id)
     const [user, setUser] = useState([]);
-    const userUrl = 'http://10.0.2.2:3000/api/user/' + userId;
+    const userUrl = `http://10.0.2.2:4000/api/user/${id}`;
 
     const fetchData = () => {
         fetch(userUrl)
@@ -17,7 +20,7 @@ export const UserApi = () => {
     }
 
     const [userPost, setUserPost] = useState([])
-    const postFromUserUrl = 'http://10.0.2.2:3000/api/post/perfil/' + userId;
+    const postFromUserUrl = `http://10.0.2.2:4000/api/post/perfil/${id}`;
     const postFromUser = () => {
         fetch(postFromUserUrl)
             .then(response => response.json())
@@ -33,7 +36,7 @@ export const UserApi = () => {
         fetchData()
         postFromUser()
 
-    }, [])
+    }, [id])
 
     const countLikes = () => {
         /*   count = post.likes + 1;
@@ -52,7 +55,7 @@ export const UserApi = () => {
             <Text style={styles.namePerfil}  >{info.nombre}</Text>
             <View style={styles.info}>
                 <Text style={styles.namePerfil}>INFO</Text>
-                <Text style={styles.contentInfo}  >{info.nombre}</Text>
+                <Text style={styles.contentInfo}>{info.nombre}</Text>
                 <Text style={styles.contentInfo}>{info.apellido}</Text>
                 <Text style={styles.contentInfo}>{info.edad}</Text>
                 <Text style={styles.contentInfo}>{info.titulo}</Text>

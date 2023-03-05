@@ -20,7 +20,7 @@ export const ComentariosStack = ({navigation}) => {
       onSubmit={async (values, actions) => {
         actions.resetForm();
         console.log(values)
-        await fetch("http://10.0.2.2:3000/api/comentarios", {
+        await fetch("http://10.0.2.2:4000/api/comentarios", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

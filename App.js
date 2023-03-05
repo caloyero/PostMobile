@@ -30,29 +30,31 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Navigation } from './src/components/Navigation';
 import PostApi from './src/api/PostApi';
-
+import UserProvider from './src/components/aunt/AuntUser';
 const App = () => {
 
 
   return (
-    
-     
+    <UserProvider>
       <NavigationContainer>
-      <View
-         style={styles.containerLogo}
-      >
-      <StatusBar
-        animated={true}
-        backgroundColor="#6C4AB6"
-       />
-       <Image
-       style={styles.logo}
-        source={require('./src/utils/images/logo.png')}
-       />
-      </View>
+        <View
+          style={styles.containerLogo}
+        >
+          <StatusBar
+            animated={true}
+            backgroundColor="#6C4AB6"
+          />
+          <Image
+            style={styles.logo}
+            source={require('./src/components/utils/images/logo.png')}
+          />
+        </View>
         <Navigation />
       </NavigationContainer>
-    
+    </UserProvider>
+
+
+
 
 
   );
@@ -75,11 +77,11 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-  containerLogo:{
+  containerLogo: {
     backgroundColor: '#6C4AB6',
     height: 50,
   },
-  logo:{
+  logo: {
     width: 120,
     height: 30,
     marginTop: 12,
